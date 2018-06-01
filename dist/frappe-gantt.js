@@ -818,8 +818,8 @@ class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
-        const start_date = date_utils.format(this.task._start, 'MMM D');
-        const end_date = date_utils.format(this.task._end, 'MMM D');
+        const start_date = date_utils.format(this.task._start, 'MMM d');
+        const end_date = date_utils.format(this.task._end, 'MMM d');
         const subtitle = 'Planned dates: ' + start_date + ' - ' + end_date;
 
         this.gantt.show_popup({
