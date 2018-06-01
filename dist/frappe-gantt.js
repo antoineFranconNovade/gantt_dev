@@ -1698,18 +1698,8 @@ class Gantt {
             this.options.step = 24 * 30;
             this.options.column_width = 120;
         } else if (view_mode === 'Max') {
-            if (max < 15) {
-                this.options.step = 24;
-                this.options.column_width = 38;
-            }
-            else if (max < 90) {
-                this.options.step = 24 * 7;
-                this.options.column_width = 140;
-            }
-            else {
-                this.options.step = 24 * 30;
-                this.options.column_width = (Math.floor(document.getElementById('one').offsetWidth - 200) * 30 / max);
-            }
+            this.options.step = 24 * 30;
+            this.options.column_width = (Math.floor(document.getElementById('one').offsetWidth - 200) * 30 / max);
         }
     }
 
@@ -1739,7 +1729,7 @@ class Gantt {
             this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
         } else if (this.view_is('Max')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -1, 'year');
+            this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
         } else {
             this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
@@ -1755,7 +1745,7 @@ class Gantt {
             if (!cur_date) {
                 cur_date = date_utils.clone(this.gantt_start);
             } else {
-                cur_date = this.view_is('Month') || this.view_is('Max')
+                cur_date = (this.view_is('Month') || (this.view_is('Max')))
                     ? date_utils.add(cur_date, 1, 'month')
                     : date_utils.add(cur_date, this.options.step, 'hour');
             }
