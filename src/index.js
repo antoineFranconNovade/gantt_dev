@@ -543,29 +543,29 @@ export default class Gantt {
             'Half Day_lower': date_utils.format(date, 'HH'),
             Day_lower:
                 date.getDate() !== last_date.getDate()
-                    ? date_utils.format(date, 'D')
+                    ? date_utils.format(date, 'd')
                     : '',
             Week_lower:
                 date.getMonth() !== last_date.getMonth()
-                    ? date_utils.format(date, 'D MMM')
-                    : date_utils.format(date, 'D'),
+                    ? date_utils.format(date, 'd MMM')
+                    : date_utils.format(date, 'd'),
             Month_lower: date_utils.format(date, 'MMMM'),
             Max_lower: date_utils.format(date, 'MM'),
             Hour_upper:
                 date.getDate() !== last_date.getDate()
                     ? date.getMonth() !== last_date.getMonth()
-                      ? date_utils.format(date, 'D MMM')
-                      : date_utils.format(date, 'D')
+                      ? date_utils.format(date, 'd MMM')
+                      : date_utils.format(date, 'd')
                     : '',
             'Quarter Day_upper':
                 date.getDate() !== last_date.getDate()
-                    ? date_utils.format(date, 'D MMM')
+                    ? date_utils.format(date, 'd MMM')
                     : '',
             'Half Day_upper':
                 date.getDate() !== last_date.getDate()
                     ? date.getMonth() !== last_date.getMonth()
-                      ? date_utils.format(date, 'D MMM')
-                      : date_utils.format(date, 'D')
+                      ? date_utils.format(date, 'd MMM')
+                      : date_utils.format(date, 'd')
                     : '',
             Day_upper:
                 date.getMonth() !== last_date.getMonth()

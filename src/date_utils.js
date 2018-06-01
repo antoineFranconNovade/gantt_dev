@@ -75,7 +75,7 @@ export default {
             HH: values[3],
             mm: values[4],
             ss: values[5],
-            D: values[2],
+            d: values[2],
             MMMM: month_names[+values[1]],
             MMM: month_names[+values[1]]
         };
