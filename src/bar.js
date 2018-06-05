@@ -290,16 +290,25 @@ export default class Bar {
     }
 
     draw_label() {
-
-        var bar_label_class = this.task.animate ? 'bar-label-hidden' : 'bar-label';
-
-        this.$bar_label = createSVG('text', {
-            x: this.x + this.width / 2,
-            y: this.y + this.height / 2,
-            innerHTML: this.task.name,
-            class: bar_label_class,
-            append_to: this.bar_group
-        });
+        var bar_label_class_inner = this.task.animate ? 'bar-label-hidden' : 'bar-label';
+        var bar_label_class_outer = this.task.animate ? 'bar-label-hidden.big' : 'bar-label.big';
+        if (this.$bar.getWidth() < this.task.name.length * 7) {
+            this.$bar_label = createSVG('text', {
+                x: this.x + this.width + 5,
+                y: this.y + this.height / 2,
+                innerHTML: this.task.name,
+                class: bar_label_class_outer,
+                append_to: this.bar_group
+            });
+        } else {
+            this.$bar_label = createSVG('text', {
+                x: this.x + this.width / 2,
+                y: this.y + this.height / 2,
+                innerHTML: this.task.name,
+                class: bar_label_class_inner,
+                append_to: this.bar_group
+            });
+        }
 
         if (this.task.animate) {
             animateSVG(this.$bar_label, 'opacity', 0, 0, '0.8s', '0s');

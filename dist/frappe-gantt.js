@@ -650,16 +650,25 @@ class Bar {
     }
 
     draw_label() {
-
-        var bar_label_class = this.task.animate ? 'bar-label-hidden' : 'bar-label';
-
-        this.$bar_label = createSVG('text', {
-            x: this.x + this.width / 2,
-            y: this.y + this.height / 2,
-            innerHTML: this.task.name,
-            class: bar_label_class,
-            append_to: this.bar_group
-        });
+        var bar_label_class_inner = this.task.animate ? 'bar-label-hidden' : 'bar-label';
+        var bar_label_class_outer = this.task.animate ? 'bar-label-hidden.big' : 'bar-label.big';
+        if (this.$bar.getWidth() < this.task.name.length * 7) {
+            this.$bar_label = createSVG('text', {
+                x: this.x + this.width + 5,
+                y: this.y + this.height / 2,
+                innerHTML: this.task.name,
+                class: bar_label_class_outer,
+                append_to: this.bar_group
+            });
+        } else {
+            this.$bar_label = createSVG('text', {
+                x: this.x + this.width / 2,
+                y: this.y + this.height / 2,
+                innerHTML: this.task.name,
+                class: bar_label_class_inner,
+                append_to: this.bar_group
+            });
+        }
 
         if (this.task.animate) {
             animateSVG(this.$bar_label, 'opacity', 0, 0, '0.8s', '0s');
@@ -1660,9 +1669,10 @@ class Gantt {
     }
 
     change_view_mode(mode = this.options.view_mode, tasks = this.tasks) {
-
         var firstTaskStart = tasks.reduce(function(prev, curr) {
-            return date_utils.diff(prev.start, curr.start, 'day') < 0 ? prev : curr;
+            return date_utils.diff(prev.start, curr.start, 'day') < 0
+                ? prev
+                : curr;
         });
         var lastTaskEnd = tasks.reduce(function(prev, curr) {
             return date_utils.diff(prev.end, curr.end, 'day') > 0 ? prev : curr;
@@ -1699,7 +1709,10 @@ class Gantt {
             this.options.column_width = 120;
         } else if (view_mode === 'Max') {
             this.options.step = 24 * 30;
-            this.options.column_width = (Math.floor(document.getElementById('one').offsetWidth - 200) * 30 / max);
+            this.options.column_width =
+                Math.floor(document.getElementById('one').offsetWidth - 200) *
+                30 /
+                max;
         }
     }
 
@@ -1745,9 +1758,10 @@ class Gantt {
             if (!cur_date) {
                 cur_date = date_utils.clone(this.gantt_start);
             } else {
-                cur_date = (this.view_is('Month') || (this.view_is('Max')))
-                    ? date_utils.add(cur_date, 1, 'month')
-                    : date_utils.add(cur_date, this.options.step, 'hour');
+                cur_date =
+                    this.view_is('Month') || this.view_is('Max')
+                        ? date_utils.add(cur_date, 1, 'month')
+                        : date_utils.add(cur_date, this.options.step, 'hour');
             }
             this.dates.push(cur_date);
         }
@@ -1846,7 +1860,12 @@ class Gantt {
             displayed_rows++;
         }
 
-        const gantt_container_height = parseInt(window.getComputedStyle(document.getElementsByClassName('gantt-container')[0]).height, 10);
+        const gantt_container_height = parseInt(
+            window.getComputedStyle(
+                document.getElementsByClassName('gantt-container')[0]
+            ).height,
+            10
+        );
         while (displayed_rows * row_height < gantt_container_height) {
             createSVG('rect', {
                 x: 0,
@@ -1906,7 +1925,7 @@ class Gantt {
                 tick_class += ' thick';
             }
             // thick ticks for quarters
-            if ((this.view_is('Month') || this.view_is('Max')) && (date.getMonth() + 1) % 3 === 0) {
+            if (this.view_is('Month') || this.view_is('Max') && (date.getMonth() + 1) % 3 === 0) {
                 tick_class += ' thick';
             }
 
@@ -2088,7 +2107,7 @@ class Gantt {
             Max_upper:
                 date.getFullYear() !== last_date.getFullYear()
                     ? date_utils.format(date, 'YYYY')
-                    : '',
+                    : ''
         };
 
         const base_pos = {
@@ -2111,7 +2130,7 @@ class Gantt {
             Month_lower: this.options.column_width / 2,
             Month_upper: this.options.column_width * 12 / 2,
             Max_lower: this.options.column_width / 2,
-            Max_upper: this.options.column_width * 12 / 2,
+            Max_upper: this.options.column_width * 12 / 2
         };
 
         return {
