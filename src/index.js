@@ -550,7 +550,7 @@ export default class Gantt {
                     ? date_utils.format(date, 'd MMM')
                     : date_utils.format(date, 'd'),
             Month_lower: date_utils.format(date, 'MMMM'),
-            Max_lower: date_utils.format(date, 'MM'),
+            Max_lower: date_utils.format(date, 'MM') % 3 == 0 ? date_utils.format(date, 'MM') : '',
             Hour_upper:
                 date.getDate() !== last_date.getDate()
                     ? date.getMonth() !== last_date.getMonth()
