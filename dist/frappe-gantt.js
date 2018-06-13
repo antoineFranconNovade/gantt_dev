@@ -1392,14 +1392,13 @@ class Arrow {
             ? end_y + this.gantt.options.arrow_curve
             : end_y - this.gantt.options.arrow_curve;
 
-        this.path = `
-            M ${start_x} ${start_y}
-            V ${offset}
-            a ${curve} ${curve} 0 0 ${clockwise} ${curve} ${curve_y}
-            L ${end_x} ${end_y}
-            m -5 -5
-            l 5 5
-            l -5 5`;
+        this.path = `M ${start_x}` + ' ' + `${start_y}` + ' ' +
+            `V ${offset}` + ' ' +
+            `a ${curve}` + ' ' + `${curve}` + ' ' + `0` + ' ' + `0` + ' ' + `${clockwise}` + ' ' + `${curve}` + ' ' + `${curve_y}` + ' ' +
+            `L ${end_x}` + ' ' + `${end_y}` + ' ' +
+            `m -5` + ' ' + `-5` + ' ' +
+            `l 5` + ' ' + `5` + ' ' +
+            `l -5` + ' ' + `5`;
 
         if (
             this.to_task.$bar.getX() <
@@ -1412,18 +1411,17 @@ class Arrow {
                 curve_y;
             const left = this.to_task.$bar.getX() - this.gantt.options.padding;
 
-            this.path = `
-                M ${start_x} ${start_y}
-                v ${down_1}
-                a ${curve} ${curve} 0 0 1 -${curve} ${curve}
-                H ${left}
-                a ${curve} ${curve} 0 0 ${clockwise} -${curve} ${curve_y}
-                V ${down_2}
-                a ${curve} ${curve} 0 0 ${clockwise} ${curve} ${curve_y}
-                L ${end_x} ${end_y}
-                m -5 -5
-                l 5 5
-                l -5 5`;
+            this.path = `M ${start_x}` + ' ' + `${start_y}` + ' ' +
+                `v ${down_1}` + ' ' +
+                `a ${curve}` + ' ' + `${curve}` + ' ' + `0` + ' ' + `0` + ' ' + `1` + ' ' + `-${curve}` + ' ' + `${curve}` + ' ' +
+                `H ${left}` + ' ' +
+                `a ${curve}` + ' ' + `${curve}` + ' ' + `0` + ' ' + `0` + ' ' + `${clockwise}` + ' ' + `-${curve}` + ' ' + `${curve_y}` + ' ' +
+                `V ${down_2}` + ' ' +
+                `a ${curve}` + ' ' + `${curve}` + ' ' + `0` + ' ' + `0` + ' ' + `${clockwise}` + ' ' + `${curve}` + ' ' + `${curve_y}` + ' ' +
+                `L ${end_x}` + ' ' + `${end_y}` + ' ' +
+                `m -5` + ' ' + `-5` + ' ' +
+                `l 5` + ' ' + `5` + ' ' +
+                `l -5` + ' ' + `5`;
         }
     }
 
@@ -1951,7 +1949,7 @@ class Gantt {
             }
 
             createSVG('path', {
-                d: `M ${tick_x} ${tick_y} v ${tick_height}`,
+                d: `M ${tick_x}` + ' ' + `${tick_y}` + ' ' + `v ${tick_height}`,
                 class: tick_class,
                 append_to: this.layers.grid
             });

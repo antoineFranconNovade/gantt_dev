@@ -435,7 +435,7 @@ export default class Gantt {
             }
 
             createSVG('path', {
-                d: `M ${tick_x} ${tick_y} v ${tick_height}`,
+                d: `M ${tick_x}` + ' ' + `${tick_y}` + ' ' + `v ${tick_height}`,
                 class: tick_class,
                 append_to: this.layers.grid
             });
