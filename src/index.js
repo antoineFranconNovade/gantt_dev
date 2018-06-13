@@ -6,6 +6,8 @@ import Popup from './popup';
 
 import './gantt.scss';
 
+var numberOfBarsDrawn = 0;
+
 export default class Gantt {
     constructor(wrapper, tasks, options) {
         this.setup_wrapper(wrapper);
@@ -377,6 +379,7 @@ export default class Gantt {
             row_y += this.options.bar_height + this.options.padding;
             displayed_rows++;
         }
+        numberOfBarsDrawn = displayed_rows;
     }
 
     make_grid_header() {
@@ -447,7 +450,7 @@ export default class Gantt {
 
             const height =
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length +
+                numberOfBarsDrawn +
                 this.options.header_height +
                 this.options.padding / 2;
 
@@ -469,7 +472,7 @@ export default class Gantt {
 
             const height =
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length +
+                numberOfBarsDrawn +
                 this.options.header_height +
                 this.options.padding / 2;
 
@@ -493,7 +496,7 @@ export default class Gantt {
 
             const height =
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length +
+                numberOfBarsDrawn +
                 this.options.header_height +
                 this.options.padding / 2;
 
