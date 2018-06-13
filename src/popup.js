@@ -53,6 +53,7 @@ export default class Popup {
                 this.title.clientHeight / 2 +
                 position_meta.height / 2 +
                 this.title.clientHeight +
+                25 +
                 'px';
 
             this.pointer.style.transform = 'rotateZ(180deg)';
