@@ -31,6 +31,11 @@ export default class Gantt {
         element.appendChild(this.$container);
 
         // parent svg element
+        this.$svg_header = createSVG('svg', {
+            append_to: this.$container,
+            class: 'gantt_header'
+        });
+
         this.$svg = createSVG('svg', {
             append_to: this.$container,
             class: 'gantt'
@@ -39,6 +44,7 @@ export default class Gantt {
         // popup wrapper
         this.popup_wrapper = document.createElement('div');
         this.popup_wrapper.classList.add('popup-wrapper');
+        this.$svg_header.parentElement.appendChild(this.popup_wrapper);
         this.$svg.parentElement.appendChild(this.popup_wrapper);
     }
 
@@ -266,8 +272,16 @@ export default class Gantt {
 
     setup_layers() {
         this.layers = {};
-        const layers = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
+        // const layers = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
+        const layers_header = ['grid_header', 'date'];
+        const layers = ['grid', 'arrow', 'progress', 'bar', 'details'];
         // make group layers
+        for (let layer of layers_header) {
+            this.layers[layer] = createSVG('g', {
+                class: layer,
+                append_to: this.$svg_header
+            });
+        }
         for (let layer of layers) {
             this.layers[layer] = createSVG('g', {
                 class: layer,
@@ -374,7 +388,7 @@ export default class Gantt {
             width: header_width,
             height: header_height,
             class: 'grid-header',
-            append_to: this.layers.grid
+            append_to: this.layers.grid_header
         });
     }
 
