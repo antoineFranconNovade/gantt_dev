@@ -1746,14 +1746,17 @@ class Gantt {
             this.gantt_start = date_utils.add(this.gantt_start, -7, 'day');
             this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
         } else if (this.view_is('Month')) {
-            this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
+            this.gantt_start = date_utils.add(this.gantt_start, -3, 'month');
+            this.gantt_end = date_utils.add(this.gantt_end, 6, 'month');
         } else if (this.view_is('Max')) {
-            this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
-        } else {
-            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
+            this.gantt_start = date_utils.add(this.gantt_start, -6, 'month');
+            this.gantt_end = date_utils.add(this.gantt_end, 6, 'month');
+        } else if (this.view_is('Week')) {
+            this.gantt_start = date_utils.add(this.gantt_start, -15, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 25, 'day');
+        } else if (this.view_is('Day')) {
+            this.gantt_start = date_utils.add(this.gantt_start, -8, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 10, 'day');
         }
     }
 
