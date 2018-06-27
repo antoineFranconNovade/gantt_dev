@@ -79,13 +79,13 @@ export default class Gantt {
         // prepare tasks
         this.tasks = tasks.map((task, i) => {
             // convert to Date objects
-            task._start = date_utils.parse(task.start);
-            task._end = date_utils.parse(task.end);
+            task._start = date_utils.parse((this.options.view_mode == "Hour") ? task.start : date_utils.start_of(task.start, 'day'));
+            task._end = date_utils.parse((this.options.view_mode == "Hour") ? task.end : date_utils.start_of(task.end, 'day'));
 
-            task._start_delay = date_utils.parse(task.delay.start);
-            task._start_overdue = date_utils.parse(task.overdue.start);
-            task._end_delay = date_utils.parse(task.delay.end);
-            task._end_overdue = date_utils.parse(task.overdue.end);
+            task._start_delay = task.delay.start ? date_utils.parse((this.options.view_mode == "Hour") ? task.delay.start : date_utils.start_of(task.delay.start, 'day')) : null;
+            task._start_overdue = task.overdue.start ? date_utils.parse((this.options.view_mode == "Hour") ? task.overdue.start : date_utils.start_of(task.overdue.start, 'day')) : null;
+            task._end_delay = task.delay.end ? date_utils.parse((this.options.view_mode == "Hour") ? task.delay.end : date_utils.start_of(task.delay.end, 'day')) : null;
+            task._end_overdue = task.overdue.end ? date_utils.parse((this.options.view_mode == "Hour") ? task.overdue.end : date_utils.start_of(task.overdue.end, 'day')) : null;
 
             // make task invalid if duration too large
             if (date_utils.diff(task._end, task._start, 'year') > 10) {
@@ -229,8 +229,8 @@ export default class Gantt {
 
         // add date padding on both sides
         if (this.view_is(['Hour', 'Quarter Day', 'Half Day'])) {
-            this.gantt_start = date_utils.add(this.gantt_start, -7, 'day');
-            this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
+            this.gantt_start = date_utils.add(this.gantt_start, -10, 'hour');
+            this.gantt_end = date_utils.add(this.gantt_end, 1, 'day');
         } else if (this.view_is('Month')) {
             this.gantt_start = date_utils.add(this.gantt_start, -3, 'month');
             this.gantt_end = date_utils.add(this.gantt_end, 6, 'month');
@@ -241,8 +241,8 @@ export default class Gantt {
             this.gantt_start = date_utils.add(this.gantt_start, -15, 'day');
             this.gantt_end = date_utils.add(this.gantt_end, 25, 'day');
         } else if (this.view_is('Day')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -8, 'day');
-            this.gantt_end = date_utils.add(this.gantt_end, 10, 'day');
+            this.gantt_start = date_utils.add(this.gantt_start, -10, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 15, 'day');
         }
     }
 
@@ -456,7 +456,29 @@ export default class Gantt {
 
     make_grid_highlights() {
         // highlight today's date
-        if (this.view_is('Day')) {
+        if (this.view_is('Hour')) {
+            const x =
+                date_utils.diff(date_utils.now(), this.gantt_start, 'hour') /
+                this.options.step *
+                this.options.column_width;
+            const y = 0;
+            const width = this.options.column_width;
+
+            const height =
+                (this.options.bar_height + this.options.padding) *
+                    numberOfBarsDrawn +
+                this.options.header_height +
+                this.options.padding / 2;
+
+            createSVG('rect', {
+                x,
+                y,
+                width,
+                height,
+                class: 'today-highlight',
+                append_to: this.layers.grid
+            });
+        } else if (this.view_is('Day')) {
             const x =
                 date_utils.diff(date_utils.today(), this.gantt_start, 'hour') /
                 this.options.step *
@@ -628,19 +650,19 @@ export default class Gantt {
         };
 
         const x_pos = {
-            Hour_lower: this.options.column_width * 2 / 2,
+            Hour_lower: this.options.column_width / 4,
             Hour_upper: 0,
             'Quarter Day_lower': this.options.column_width * 4 / 2,
             'Quarter Day_upper': 0,
             'Half Day_lower': this.options.column_width * 2 / 2,
             'Half Day_upper': 0,
-            Day_lower: this.options.column_width / 2,
+            Day_lower: this.options.column_width / 4,
             Day_upper: this.options.column_width * 30 / 2,
             Week_lower: 0,
             Week_upper: this.options.column_width * 4 / 2,
-            Month_lower: this.options.column_width / 2,
+            Month_lower: this.options.column_width / 3,
             Month_upper: this.options.column_width * 12 / 2,
-            Max_lower: this.options.column_width / 2,
+            Max_lower: this.options.column_width / 3,
             Max_upper: this.options.column_width * 12 / 2
         };
 
