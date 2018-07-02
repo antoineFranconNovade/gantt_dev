@@ -229,19 +229,19 @@ export default class Gantt {
 
         // add date padding on both sides
         if (this.view_is(['Hour', 'Quarter Day', 'Half Day'])) {
-            this.gantt_start = date_utils.add(this.gantt_start, -10, 'hour');
+            this.gantt_start = date_utils.add(this.gantt_start, -1, 'day');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'day');
         } else if (this.view_is('Month')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -3, 'month');
-            this.gantt_end = date_utils.add(this.gantt_end, 6, 'month');
+            this.gantt_start = date_utils.add(this.gantt_start, -13, 'month');
+            this.gantt_end = date_utils.add(this.gantt_end, 10, 'month');
         } else if (this.view_is('Max')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -6, 'month');
-            this.gantt_end = date_utils.add(this.gantt_end, 6, 'month');
+            this.gantt_start = date_utils.add(this.gantt_start, -13, 'month');
+            this.gantt_end = date_utils.add(this.gantt_end, 10, 'month');
         } else if (this.view_is('Week')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -15, 'day');
-            this.gantt_end = date_utils.add(this.gantt_end, 25, 'day');
+            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
+            this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
         } else if (this.view_is('Day')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -10, 'day');
+            this.gantt_start = date_utils.add(this.gantt_start, -15, 'day');
             this.gantt_end = date_utils.add(this.gantt_end, 15, 'day');
         }
     }
