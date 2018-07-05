@@ -79,13 +79,13 @@ export default class Gantt {
         // prepare tasks
         this.tasks = tasks.map((task, i) => {
             // convert to Date objects
-            task._start = date_utils.parse((this.options.view_mode == "Hour") ? task.start : date_utils.start_of(task.start, 'day'));
-            task._end = date_utils.parse((this.options.view_mode == "Hour") ? task.end : date_utils.start_of(task.end, 'day'));
+            task._start = date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(task.start, 'hour') : date_utils.start_of(task.start, 'day'));
+            task._end = date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(task.end, 'hour') : date_utils.start_of(task.end, 'day'));
 
-            task._start_delay = task.delay.start ? date_utils.parse((this.options.view_mode == "Hour") ? task.delay.start : date_utils.start_of(task.delay.start, 'day')) : null;
-            task._start_overdue = task.overdue.start ? date_utils.parse((this.options.view_mode == "Hour") ? task.overdue.start : date_utils.start_of(task.overdue.start, 'day')) : null;
-            task._end_delay = task.delay.end ? date_utils.parse((this.options.view_mode == "Hour") ? task.delay.end : date_utils.start_of(task.delay.end, 'day')) : null;
-            task._end_overdue = task.overdue.end ? date_utils.parse((this.options.view_mode == "Hour") ? task.overdue.end : date_utils.start_of(task.overdue.end, 'day')) : null;
+            task._start_delay = task.delay.start ? date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(task.delay.start, 'hour') : date_utils.start_of(task.delay.start, 'day')) : null;
+            task._start_overdue = task.overdue.start ? date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(task.overdue.start, 'hour') : date_utils.start_of(task.overdue.start, 'day')) : null;
+            task._end_delay = task.delay.end ? date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(task.delay.end, 'hour') : date_utils.start_of(task.delay.end, 'day')) : null;
+            task._end_overdue = task.overdue.end ? date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(task.overdue.end, 'hour') : date_utils.start_of(task.overdue.end, 'day')) : null;
 
             // make task invalid if duration too large
             if (date_utils.diff(task._end, task._start, 'year') > 10) {

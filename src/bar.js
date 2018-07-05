@@ -678,12 +678,14 @@ export default class Bar {
 
     compute_activity_start_cursor_class() {
         var activity_start_cursor_class = 'bar';
+        if (this.task.progress > 0) activity_start_cursor_class = 'bar-wip';
         if (this.task.completion > 0) activity_start_cursor_class = 'bar-completion';
         return activity_start_cursor_class;
     }
 
     compute_activity_end_cursor_class() {
         var activity_end_cursor_class = 'bar';
+        if (this.task.progress >= 100) activity_end_cursor_class = 'bar-wip';
         if (this.task.completion >= 100) activity_end_cursor_class = 'bar-completion';
         return activity_end_cursor_class;
     }
