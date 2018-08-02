@@ -86,7 +86,6 @@ export default class Bar {
         this.delay_end_cursor_class = this.compute_delay_end_cursor_class();
         this.activity_start_cursor_class = this.compute_activity_start_cursor_class();
         this.activity_end_cursor_class = this.compute_activity_end_cursor_class();
-        this.delay_bar_class = this.compute_delay_bar_class();
         this.overdue_bar_class = this.compute_overdue_bar_class();
         this.progress_width =
             this.gantt.options.column_width *
@@ -135,7 +134,6 @@ export default class Bar {
         this.draw_completion_bar();
         this.draw_delay_start_cursor();
         this.draw_delay_end_cursor();
-        this.draw_delay_bar();
         this.draw_label();
         this.draw_status();
         this.draw_resize_handles();
@@ -155,7 +153,10 @@ export default class Bar {
             append_to: this.bar_group
         });
 
-        if (this.task.animate) animateSVG(this.$bar, 'width', 0, this.width, '0.4s', '0s');
+        if (this.task.animate) {
+            animateSVG(this.$bar, 'width', 0, 0, '0.2s', '0s');
+            animateSVG(this.$bar, 'width', 0, this.width, '0.4s', '0.2s');
+        }
 
         if (this.invalid) {
             this.$bar.classList.add('bar-invalid');
@@ -176,8 +177,8 @@ export default class Bar {
         });
 
         if (this.task.animate) {
-            animateSVG(this.$bar_progress, 'width', 0, 0, '0.4s', '0s');
-            animateSVG(this.$bar_progress, 'width', 0, this.progress_width, '0.4s', '0.4s');
+            animateSVG(this.$bar_progress, 'width', 0, 0, '0.6s', '0s');
+            animateSVG(this.$bar_progress, 'width', 0, this.progress_width, '0.6s', '0.6s');
         }
     }
 
@@ -195,8 +196,8 @@ export default class Bar {
         });
 
         if (this.task.animate) {
-            animateSVG(this.$bar_completion, 'width', 0, 0, '0.4s', '0s');
-            animateSVG(this.$bar_completion, 'width', 0, this.completion_width, '0.4s', '0.4s');
+            animateSVG(this.$bar_completion, 'width', 0, 0, '0.6s', '0s');
+            animateSVG(this.$bar_completion, 'width', 0, this.completion_width, '0.6s', '0.6s');
         }
     }
 
@@ -223,70 +224,87 @@ export default class Bar {
         const y = this.$bar.getY();
         const height = this.$bar.getHeight();
         return [
-            x,
-            y + height - 5,
-            x,
-            y + height + 8,
-            x + (x > this.x ? -4 : 4),
-            y + height + 8,
-            x + (x > this.x ? -4 : 4),
-            y + height - 5
+            x + (x > this.x ? -0.3 : 0.3),
+            y + height,
+            x + (x > this.x ? 10 : -10),
+            y + height / 2,
+            x + (x > this.x ? -0.3 : 0.3),
+            y
         ];
     }
 
     draw_delay_start_cursor() {
         if (this.invalid || !this.delay_start_x) return;
         this.$cursor_delay_start = createSVG('polygon', {
-            points: this.get_delay_cursor_polygon_points(
+            points: this.get_delay_cursor_polygon_points_start(
                 this.delay_start_x
             ).join(','),
             class: this.delay_start_cursor_class,
             append_to: this.bar_group
         });
+
+        if (this.task.animate) {
+            animateSVG(this.$cursor_delay_start, 'opacity', 0, 0, '1.8s', '0s');
+            animateSVG(this.$cursor_delay_start, 'opacity', 0, 1, '0.8s', '1.8s');
+        }
     }
 
     draw_delay_end_cursor() {
         if (this.invalid || !this.delay_end_x) return;
         this.$cursor_delay_end = createSVG('polygon', {
-            points: this.get_delay_cursor_polygon_points(this.delay_end_x).join(
+            points: this.get_delay_cursor_polygon_points_end(this.delay_end_x).join(
                 ','
             ),
             class: this.delay_end_cursor_class,
             append_to: this.bar_group
         });
-    }
 
-    draw_delay_bar() {
-        if (this.invalid || !(this.delay_start_x && this.delay_width)) return;
-        this.$bar_delay = createSVG('rect', {
-            x: this.delay_start_x,
-            y: this.y,
-            width: this.delay_width,
-            height: this.height * 2 / 3,
-            rx: this.corner_radius,
-            ry: this.corner_radius,
-            class: this.delay_bar_class,
-            append_to: this.bar_group
-        });
+        if (this.task.animate) {
+            animateSVG(this.$cursor_delay_end, 'opacity', 0, 0, '1.8s', '0s');
+            animateSVG(this.$cursor_delay_end, 'opacity', 0, 1, '0.8s', '1.8s');
+        }
     }
 
     draw_overdue() {
         if (this.invalid || !(this.overdue_x && this.overdue_width)) return;
         this.$bar_overdue = createSVG('rect', {
             x: this.overdue_x,
-            y: this.y,
+            y: this.y + this.height * 2 / 3,
             width: this.overdue_width,
-            height: this.height,
+            height: this.height / 3,
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: this.overdue_bar_class,
             append_to: this.bar_group
         });
 
+        this.$cursor_overdue = createSVG('polygon', {
+            points: this.get_overdue_arrow_polygon_points(this.overdue_x + this.overdue_width).join(
+                ','
+            ),
+            class: this.overdue_bar_class,
+            append_to: this.bar_group
+        });
+
         if (this.task.animate) {
-            animateSVG(this.$bar_overdue, 'width', 0, 0, '0.8s', '0s');
-            animateSVG(this.$bar_overdue, 'width', 0, this.overdue_width, '0.4s', '0.8s');
+            animateSVG(this.$bar_overdue, 'width', 0, 0, '1.2s', '0s');
+            animateSVG(this.$bar_overdue, 'width', 0, this.overdue_width, '0.6s', '1.2s');
+            animateSVG(this.$cursor_overdue, 'opacity', 0, 0, '1.8s', '0s');
+            animateSVG(this.$cursor_overdue, 'opacity', 0, 1, '0.8s', '1.8s');
         }
+    }
+
+    get_overdue_arrow_polygon_points(x) {
+        const height = this.$bar.getHeight();
+        const y = this.$bar.getY() + height * 2 / 3;
+        return [
+            x,
+            y - 2,
+            x + 5,
+            y + height / 6,
+            x,
+            y + height / 3 + 2
+        ];
     }
 
     draw_label() {
@@ -311,8 +329,8 @@ export default class Bar {
         }
 
         if (this.task.animate) {
-            animateSVG(this.$bar_label, 'opacity', 0, 0, '0.8s', '0s');
-            animateSVG(this.$bar_label, 'opacity', 0, 1, '0.4s', '0.8s', 'freeze');
+            animateSVG(this.$bar_label, 'opacity', 0, 0, '0.8s', '0s', 'freeze');
+            animateSVG(this.$bar_label, 'opacity', 0, 1, '0.6s', '0.8s', 'freeze');
         }
 
         // labels get BBox in the next tick
@@ -381,7 +399,7 @@ export default class Bar {
         ];
     }
 
-    get_delay_cursor_polygon_points(x) {
+    get_delay_cursor_polygon_points_start(x) {
         const y = this.$bar.getY();
         const height = this.$bar.getHeight();
         return [
@@ -391,17 +409,46 @@ export default class Bar {
             y + height,
             x - 2,
             y,
+            x - 2,
+            y - 6.5,
+            x + 2.75,
+            y - 6.5,
             x,
             y,
             x,
             y + height,
-            x - 1,
-            y + height,
-            x - 4.75,
-            y + height + 6.5,
             x + 2.75,
             y + height + 6.5,
-            x - 1,
+            x - 2,
+            y + height + 6.5,
+            x - 2,
+            y + height
+        ];
+    }
+
+    get_delay_cursor_polygon_points_end(x) {
+        const y = this.$bar.getY();
+        const height = this.$bar.getHeight();
+        return [
+            x,
+            y + height,
+            x - 2,
+            y + height,
+            x - 2,
+            y,
+            x - 4.75,
+            y - 6.5,
+            x,
+            y - 6.5,
+            x,
+            y,
+            x,
+            y + height,
+            x,
+            y + height + 6.5,
+            x - 4.75,
+            y + height + 6.5,
+            x - 2,
             y + height
         ];
     }
@@ -424,41 +471,30 @@ export default class Bar {
         $.on(this.group, 'dragstart', e => {
             this.group.classList.toggle('dragged');
             this.$bar_overdue.style['pointer-events'] = 'none';
-            this.$bar_delay.style['pointer-events'] = 'none';
+            this.$cursor_overdue.style['pointer-events'] = 'none';
             this.$cursor_delay_end.style['pointer-events'] = 'none';
             this.$cursor_delay_start.style['pointer-events'] = 'none';
         });
         $.on(this.group, 'dragend', e => {
             this.group.classList.remove('dragged');
             this.$bar_overdue.style['pointer-events'] = 'visiblePainted';
-            this.$bar_delay.style['pointer-events'] = 'visiblePainted';
+            this.$cursor_overdue.style['pointer-events'] = 'visiblePainted';
             this.$cursor_delay_end.style['pointer-events'] = 'visiblePainted';
             this.$cursor_delay_start.style['pointer-events'] = 'visiblePainted';
         });
         $.on(this.group, 'mouseover', e => {
             if (!this.group.classList.contains('dragged')) {
                 this.show_popup();
-                if (this.$cursor_delay_start)
-                    this.$cursor_delay_start.style.visibility = 'visible';
-                if (this.$cursor_delay_end)
-                    this.$cursor_delay_end.style.visibility = 'visible';
-                if (this.$bar_delay)
-                    this.$bar_delay.style.visibility = 'visible';
                 if (this.$bar_status)
                     this.$bar_status.style.visibility = 'visible';
-                this.$bar_status.style.visibility = 'visible';
                 this.handle_group.querySelector('.handle').style.opacity = '1';
                 this.handle_group.querySelector('.handle.left').style.opacity = '1';
             }
         });
         $.on(this.group, 'mouseout', e => {
             this.close_popup();
-            if (this.$cursor_delay_start)
-                this.$cursor_delay_start.style.visibility = 'hidden';
-            if (this.$cursor_delay_end)
-                this.$cursor_delay_end.style.visibility = 'hidden';
-            if (this.$bar_delay) this.$bar_delay.style.visibility = 'hidden';
-            if (this.$bar_status) this.$bar_status.style.visibility = 'hidden';
+            if (this.$bar_status)
+                this.$bar_status.style.visibility = 'hidden';
             this.handle_group.querySelector('.handle').style.opacity = '0';
             this.handle_group.querySelector('.handle.left').style.opacity = '0';
         });
@@ -512,7 +548,6 @@ export default class Bar {
         this.update_completionbar_position();
         this.update_delaystartcursor_style();
         this.update_delayendcursor_style();
-        this.update_delaybar_style();
         this.update_overduebar_style();
         this.update_arrow_position();
         this.update_activitycursor_position();
@@ -692,7 +727,7 @@ export default class Bar {
 
     compute_delay_start_cursor_class() {
         var delay_start_cursor_class = 'no-delay';
-        if (this.delay_start_x && !this.delay_width) {
+        if (this.delay_start_x) {
             delay_start_cursor_class =
                 this.delay_start_x - this.x > 0
                     ? 'cursor-delay-late'
@@ -703,25 +738,13 @@ export default class Bar {
 
     compute_delay_end_cursor_class() {
         var delay_end_cursor_class = 'no-delay';
-        if (this.delay_end_x && !(this.delay_start_x && this.delay_width)) {
+        if (this.delay_end_x) {
             delay_end_cursor_class =
                 this.delay_end_x - this.x - this.width > 0
                     ? 'cursor-delay-late'
                     : 'cursor-delay-in-time';
         }
         return delay_end_cursor_class;
-    }
-
-    compute_delay_bar_class() {
-        var delay_bar_class = 'no-delay';
-        if (this.delay_start_x && this.delay_width) {
-            delay_bar_class =
-                this.delay_start_x + this.delay_width - (this.x + this.width) >
-                0
-                    ? 'bar-delay-late'
-                    : 'bar-delay-in-time';
-        }
-        return delay_bar_class;
     }
 
     compute_overdue_bar_class() {
@@ -839,6 +862,8 @@ export default class Bar {
                 'width',
                 new_width > 0 ? new_width : 0
             );
+            if (new_width) this.$cursor_overdue.setAttribute('points', this.get_overdue_arrow_polygon_points(this.$bar.getX() + new_width).join(','));
+            else this.$cursor_overdue.setAttribute('points', '');
         } else {
             this.$bar_overdue.setAttribute(
                 'x',
@@ -853,6 +878,9 @@ export default class Bar {
                 'width',
                 new_width > 0 ? new_width : 0
             );
+
+            if (new_width) this.$cursor_overdue.setAttribute('points', this.get_overdue_arrow_polygon_points(this.$bar.getX() + this.$bar.getWidth() - 3 + new_width).join(','));
+            else this.$cursor_overdue.setAttribute('points', '');
         }
     }
 
@@ -873,8 +901,7 @@ export default class Bar {
     update_delaystartcursor_style() {
         if (
             this.invalid ||
-            !this.delay_start_x ||
-            (this.delay_start_x && this.delay_width)
+            !this.delay_start_x
         )
             return;
         this.$cursor_delay_start.setAttribute(
@@ -888,8 +915,7 @@ export default class Bar {
     update_delayendcursor_style() {
         if (
             this.invalid ||
-            !this.delay_end_x ||
-            (this.delay_start_x && this.delay_width)
+            !this.delay_end_x
         )
             return;
         this.$cursor_delay_end.setAttribute(
@@ -897,19 +923,6 @@ export default class Bar {
             this.delay_end_x - this.$bar.getX() - this.$bar.getWidth() > 0
                 ? 'cursor-delay-late'
                 : 'cursor-delay-in-time'
-        );
-    }
-
-    update_delaybar_style() {
-        if (this.invalid || !(this.delay_start_x && this.delay_width)) return;
-        this.$bar_delay.setAttribute(
-            'class',
-            this.delay_start_x +
-                this.delay_width -
-                (this.$bar.getX() + this.$bar.getWidth()) >
-            0
-                ? 'bar-delay-late'
-                : 'bar-delay-in-time'
         );
     }
 
@@ -938,6 +951,7 @@ export default class Bar {
             }
         }
         this.$bar_overdue.setAttribute('class', overdue_bar_class);
+        this.$cursor_overdue.setAttribute('class', overdue_bar_class);
     }
 
     update_label_position() {

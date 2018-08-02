@@ -65,7 +65,7 @@ export default class Gantt {
                 'Max'
             ],
             bar_height: 20,
-            bar_corner_radius: 3,
+            bar_corner_radius: 1,
             arrow_curve: 5,
             padding: 18,
             view_mode: 'Day',
