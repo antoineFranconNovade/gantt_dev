@@ -505,7 +505,12 @@ export default class Bar {
 
         const start_date = date_utils.format(this.task._start, 'MMM d');
         const end_date = date_utils.format(this.task._end, 'MMM d');
-        const subtitle = 'Planned dates: ' + start_date + ' - ' + end_date;
+        const actual_start_date = this.task._start_delay ? date_utils.format(this.task._start_delay, 'MMM d') : null;
+        const actual_end_date = this.task._end_delay ? date_utils.format(this.task._end_delay, 'MMM d') : null;
+        let subtitle = 'Planned dates: ' + start_date + ' - ' + end_date;
+        if (actual_start_date && actual_end_date) subtitle += '</br>' + 'Actual dates: ' + actual_start_date + ' - ' + actual_end_date;
+        else if (actual_start_date) subtitle += '</br>' + 'Actual start: ' + actual_start_date;
+        else if (actual_end_date) subtitle += '</br>' + 'Actual end: ' + actual_end_date;
 
         this.gantt.show_popup({
             target_element: this.$bar,
