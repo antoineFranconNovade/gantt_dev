@@ -137,7 +137,6 @@ export default class Bar {
         this.draw_label();
         this.draw_status();
         this.draw_resize_handles();
-
         this.draw_activity_cursor();
     }
 
@@ -734,7 +733,11 @@ export default class Bar {
         var delay_start_cursor_class = 'no-delay';
         if (this.delay_start_x) {
             delay_start_cursor_class =
-                this.delay_start_x - this.x > 0
+                date_utils.diff(
+                    this.task._start_delay,
+                    this.task._end,
+                    'days'
+                ) > 0
                     ? 'cursor-delay-late'
                     : 'cursor-delay-in-time';
         }
@@ -745,7 +748,11 @@ export default class Bar {
         var delay_end_cursor_class = 'no-delay';
         if (this.delay_end_x) {
             delay_end_cursor_class =
-                this.delay_end_x - this.x - this.width > 0
+                date_utils.diff(
+                    this.task._end_delay,
+                    this.task._end,
+                    'days'
+                ) > 0
                     ? 'cursor-delay-late'
                     : 'cursor-delay-in-time';
         }
