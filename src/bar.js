@@ -311,8 +311,8 @@ export default class Bar {
         var bar_label_class_outer = this.task.animate ? 'bar-label-hidden.big' : 'bar-label.big';
         if (this.$bar.getWidth() < this.task.name.length * 7) {
             this.$bar_label = createSVG('text', {
-                x: this.x + this.width + 5,
-                y: this.y + this.height / 2,
+                x: this.x + this.width + (this.task.custom_class.indexOf("bar-activity") >= 0 ? 14 : 5),
+                y: this.y + this.height / (this.task.custom_class.indexOf("bar-activity") >= 0 ? 3 / 2 : 2),
                 innerHTML: this.task.name,
                 class: bar_label_class_outer,
                 append_to: this.bar_group

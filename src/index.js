@@ -1,6 +1,7 @@
 import date_utils from './date_utils';
 import { $, createSVG } from './svg_utils';
 import Bar from './bar';
+import Flag from './flag';
 import Arrow from './arrow';
 import Popup from './popup';
 
@@ -9,10 +10,11 @@ import './gantt.scss';
 var numberOfBarsDrawn = 0;
 
 export default class Gantt {
-    constructor(wrapper, tasks, options) {
+    constructor(wrapper, tasks, milestones, options) {
         this.setup_wrapper(wrapper);
         this.setup_options(options);
         this.setup_tasks(tasks);
+        this.setup_milestones(milestones);
         // initialize with default view mode
         this.change_view_mode();
         this.bind_events();
@@ -146,6 +148,36 @@ export default class Gantt {
         this.setup_dependencies();
     }
 
+    setup_milestones(milestones) {
+        // prepare milestones
+        this.milestones = milestones.map((milestone, i) => {
+            // convert to Date objects
+            milestone._date = date_utils.parse((this.options.view_mode == "Hour") ? date_utils.start_of(milestone.date, 'hour') : date_utils.start_of(milestone.date, 'day'));
+
+
+            // cache index
+            milestone._index = i;
+
+            // invalid date
+            if (!milestone.date) {
+                const today = date_utils.today();
+                milestone._date = today;
+            }
+
+            // invalid flag
+            if (!milestone.date) {
+                milestone.date = true;
+            }
+
+            // uids
+            if (!milestone.id) {
+                milestone.id = generate_id(milestone);
+            }
+
+            return milestone;
+        });
+    }
+
     setup_dependencies() {
         this.dependency_map = {};
         for (let t of this.tasks) {
@@ -156,8 +188,9 @@ export default class Gantt {
         }
     }
 
-    refresh(tasks) {
+    refresh(tasks, milestones) {
         this.setup_tasks(tasks);
+        this.setup_milestones(milestones)
         this.change_view_mode();
     }
 
@@ -275,6 +308,7 @@ export default class Gantt {
         this.make_dates();
         this.make_bars();
         this.make_arrows();
+        this.make_flags();
         this.map_arrows_on_bars();
         this.set_width();
         this.set_scroll_position();
@@ -705,6 +739,14 @@ export default class Gantt {
         }
     }
 
+    make_flags() {
+        this.flags = this.milestones.forEach(milestone => {
+            const flag = new Flag(this, milestone, numberOfBarsDrawn);
+            this.layers.grid.appendChild(flag.group);
+            return flag;
+        });
+    }
+
     map_arrows_on_bars() {
         for (let bar of this.bars) {
             bar.arrows = this.arrows.filter(arrow => {
@@ -1046,9 +1088,9 @@ export default class Gantt {
     }
 }
 
-function generate_id(task) {
+function generate_id(item) {
     return (
-        task.name +
+        item.name +
         '_' +
         Math.random()
             .toString(36)
